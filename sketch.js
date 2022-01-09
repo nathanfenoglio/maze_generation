@@ -41,6 +41,7 @@ var current_maze_plane = 0;
 var num_cells_in_a_maze_plane; //cols * rows
 var the_sequence = []; //just saving the sequence for reference as the maze is constructed
 var finished_building_mazes = false; //to trigger doing other stuff after maze is constructed
+var sleep_time = 2000; //time in milliseconds to wait to show next maze plane after maze is constructed
 
 function setup() {
 	//createCanvas(windowWidth, windowHeight);
@@ -56,10 +57,10 @@ function setup() {
 	//the math:
 	//size of 1 maze plane is cols * rows
 	//the size of the entire 3D maze is cols * rows * innieouties
-	for(var k = 0; k < innieouties; k++){
-		for(var j = 0; j < rows; j++){
-			for(var i = 0; i < cols; i++){
-				var cell = new Cell(i, j, k);
+	for(let k = 0; k < innieouties; k++){
+		for(let j = 0; j < rows; j++){
+			for(let i = 0; i < cols; i++){
+				let cell = new Cell(i, j, k);
 				grid.push(cell);
 			}
 		}
@@ -83,7 +84,7 @@ function draw() {
 		the_sequence.push(current); //just saving the sequence of cells visited
 		background(51);
 		//show the current maze plane
-		for(var i = (current_maze_plane * num_cells_in_a_maze_plane); i < ((current_maze_plane + 1) * num_cells_in_a_maze_plane); i++){
+		for(let i = (current_maze_plane * num_cells_in_a_maze_plane); i < ((current_maze_plane + 1) * num_cells_in_a_maze_plane); i++){
 			grid[i].show();
 		}
 
@@ -94,7 +95,7 @@ function draw() {
 		print_stack();
 
 		//returns a random neighbor if valid (defined) and not visited
-		var next = current.checkNeighbors(); 
+		let next = current.checkNeighbors(); 
 
 		//if next is not undefined
 		if(next){
@@ -128,11 +129,11 @@ function draw() {
 		//draw each maze plane
 		if(current_maze_plane < innieouties){
 			background(51);
-			for(var i = (current_maze_plane * num_cells_in_a_maze_plane); i < ((current_maze_plane + 1) * num_cells_in_a_maze_plane); i++){
+			for(let i = (current_maze_plane * num_cells_in_a_maze_plane); i < ((current_maze_plane + 1) * num_cells_in_a_maze_plane); i++){
 				grid[i].show();
 			}
 
-			sleep(15000); //wait before showing next maze plane
+			sleep(sleep_time); //wait before showing next maze plane
 			console.log("current_maze_plane: " + current_maze_plane);
 			current_maze_plane++;
 		}
@@ -299,16 +300,16 @@ function Cell(i, j, k){
 		//left: (i-1, j, k)
 		//out: (i, j, k - 1)
 		//in: (i, j, k + 1)
-		var neighbors = [];
+		let neighbors = [];
 		//since returning -1 if out of bounds from index function
 		//if any of the indexes below are -1 for grid
 		//the value of whichever variable will be undefined and then can check for it
-		var top = grid[index(i, j - 1, k)];
-		var right = grid[index(i + 1, j, k)];
-		var bottom = grid[index(i, j + 1, k)];
-		var left = grid[index(i - 1, j, k)];
-		var out = grid[index(i, j, k - 1)];
-		var inn = grid[index(i, j, k + 1)];
+		let top = grid[index(i, j - 1, k)];
+		let right = grid[index(i + 1, j, k)];
+		let bottom = grid[index(i, j + 1, k)];
+		let left = grid[index(i - 1, j, k)];
+		let out = grid[index(i, j, k - 1)];
+		let inn = grid[index(i, j, k + 1)];
 
 
 		//checking if variable is not undefined (out of bounds) and not visited, 
@@ -342,7 +343,7 @@ function Cell(i, j, k){
 			//chooses random available neighboring cells
 			//perhaps interesting patterns could be found by modifying this to not be random
 			//but some other complicated, but non random sequence 
-			var r = floor(random(0, neighbors.length));
+			let r = floor(random(0, neighbors.length));
 			return neighbors[r];
 		}
 		else{
@@ -352,8 +353,8 @@ function Cell(i, j, k){
 
 	this.highlight = function(red, green, blue){
 		//drawing 2D maze plane, just need to know that, not drawing a z (k) value so don't need to know about that here
-		var x = this.i * w;
-		var y = this.j * w;
+		let x = this.i * w;
+		let y = this.j * w;
 		noStroke();
 		fill(red, green, blue);
 		//fill(red, green, blue, 100);
@@ -363,8 +364,8 @@ function Cell(i, j, k){
 
 	this.show = function(){
 		//x left/right y up/down
-		var x = this.i * w;
-		var y = this.j * w;
+		let x = this.i * w;
+		let y = this.j * w;
 		//stroke(255);
 		stroke(0);
 		strokeWeight(7);
@@ -409,7 +410,7 @@ function Cell(i, j, k){
 }
 
 function removeWalls(a, b){
-	var x = a.i - b.i; //x is difference between the 2 cells left/right values
+	let x = a.i - b.i; //x is difference between the 2 cells left/right values
 	if(x === 1){
 		a.walls[3] = false; //remove left wall from cell a
 		b.walls[1] = false; //remove right wall from cell b
@@ -419,7 +420,7 @@ function removeWalls(a, b){
 		b.walls[3] = false; //remove left wall from cell b
 	}
 	
-	var y = a.j - b.j; //y is difference between the 2 cells up/down values
+	let y = a.j - b.j; //y is difference between the 2 cells up/down values
 	if(y === 1){
 		a.walls[0] = false; //remove top wall from cell a
 		b.walls[2] = false; //remove bottom wall from cell b
@@ -429,7 +430,7 @@ function removeWalls(a, b){
 		b.walls[0] = false; //remove top wall from cell b
 	}
 	
-	var z = a.k - b.k; //z is difference between the 2 cells out/inn values
+	let z = a.k - b.k; //z is difference between the 2 cells out/inn values
 	if(z === 1){
 		a.walls[4] = false; //remove out wall from cell a
 		b.walls[5] = false; //remove inn wall from cell b
@@ -439,7 +440,3 @@ function removeWalls(a, b){
 		b.walls[4] = false; //remove out wall from cell b
 	}
 }
-
-
-
-
